@@ -1,3 +1,4 @@
+# ASCII艺术字体定义，用于显示"CURSOR"文本徽标
 CURSOR_LOGO = """
   ██████╗██╗   ██╗██████╗ ███████╗ ██████╗ ██████╗ 
   ██╔════╝██║   ██║██╔══██╗██╔════╝██╔═══██╗██╔══██╗
@@ -9,8 +10,14 @@ CURSOR_LOGO = """
 
 
 def print_logo():
-    print(CURSOR_LOGO)
+    """
+    打印Cursor ASCII艺术徽标到控制台
+    
+    这个函数没有参数和返回值，直接将全局变量CURSOR_LOGO打印到标准输出
+    """
+    print(CURSOR_LOGO)  # 将定义好的ASCII艺术徽标打印到控制台
 
 
+# 如果直接运行此脚本（而非作为模块导入），则执行打印徽标操作
 if __name__ == "__main__":
-    print_logo()
+    print_logo()  # 调用打印徽标函数

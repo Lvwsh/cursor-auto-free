@@ -1,16 +1,22 @@
+# 导入操作系统相关功能模块
 import os
 
+# 定义语言处理类
 class Language:
+    # 初始化方法
     def __init__(self):
+        # 设置默认语言为中文
         self.current_language = "cn"  # Default language is Chinese
+        # 定义多语言翻译字典
         self.translations = {
+            # 中文翻译
             "cn": {
-                # System messages
-                "error": "❌",
-                "warning": "⚠️",
-                "info": "ℹ️",
+                # 系统消息图标
+                "error": "❌",      # 错误图标
+                "warning": "⚠️",    # 警告图标
+                "info": "ℹ️",       # 信息图标
                 
-                # Main program flow messages
+                # 主程序流程消息
                 "initializing_program": "\n=== 初始化程序 ===",
                 "select_operation_mode": "\n请选择操作模式:",
                 "reset_machine_code_only": "1. 仅重置机器码",
@@ -34,7 +40,7 @@ class Language:
                 "session_token_failed": "获取会话令牌失败，注册流程未完成",
                 "program_error": "程序执行出现错误: {error}",
                 
-                # Turnstile verification messages
+                # Turnstile验证相关消息
                 "detecting_turnstile": "正在检测 Turnstile 验证...",
                 "verification_success": "验证成功 - 已到达{status}页面",
                 "retry_verification": "第 {count} 次尝试验证",
@@ -43,14 +49,14 @@ class Language:
                 "verification_failed_max_retries": "验证失败 - 已达到最大重试次数 {max_retries}",
                 "turnstile_exception": "Turnstile 验证过程发生异常: {error}",
                 
-                # Cookie and session messages
+                # Cookie和会话相关消息
                 "getting_cookie": "开始获取cookie",
                 "cookie_attempt_failed": "第 {attempts} 次尝试未获取到CursorSessionToken，{retry_interval}秒后重试...",
                 "cookie_max_attempts": "已达到最大尝试次数({max_attempts})，获取CursorSessionToken失败",
                 "cookie_failure": "获取cookie失败: {error}",
                 "retry_in_seconds": "将在 {seconds} 秒后重试...",
                 
-                # Account registration messages
+                # 账号注册相关消息
                 "start_account_registration": "=== 开始注册账号流程 ===",
                 "visiting_registration_page": "正在访问注册页面: {url}",
                 "filling_personal_info": "正在填写个人信息...",
@@ -77,7 +83,7 @@ class Language:
                 "registration_complete": "\n=== 注册完成 ===",
                 "cursor_account_info": "Cursor 账号信息:\n邮箱: {email}\n密码: {password}",
                 
-                # Config related messages
+                # 配置相关消息
                 "imap_server": "IMAP服务器: {server}",
                 "imap_port": "IMAP端口: {port}",
                 "imap_username": "IMAP用户名: {username}",
@@ -86,10 +92,10 @@ class Language:
                 "temp_mail": "临时邮箱: {mail}",
                 "domain": "域名: {domain}",
                 
-                # End messages
+                # 结束消息
                 "end_message": "=" * 30 + "\n所有操作已完成\n\n=== 获取更多信息 ===\n📺 B站UP主: 想回家的前端\n🔥 公众号: code 未来\n" + "=" * 30,
                 
-                # Error messages
+                # 错误消息
                 "file_not_exists": "文件 {path} 不存在",
                 "domain_not_configured": "域名未配置，请在 .env 文件中设置 DOMAIN",
                 "temp_mail_not_configured": "临时邮箱未配置，请在 .env 文件中设置 TEMP_MAIL",
@@ -99,39 +105,40 @@ class Language:
                 "imap_pass_not_configured": "IMAP密码未配置，请在 .env 文件中设置 IMAP_PASS",
                 "imap_dir_invalid": "IMAP收件箱目录配置无效，请在 .env 文件中正确设置 IMAP_DIR",
                 
-                # Language selection
+                # 语言选择相关消息
                 "select_language": "请选择语言 / Please select language:",
                 "chinese": "1. 中文",
                 "english": "2. English",
                 "language_selected": "已选择中文作为系统语言",
                 
-                # System info
+                # 系统信息相关消息
                 "current_operating_system": "当前操作系统: {system}",
                 "executing_macos_command": "执行macOS命令",
                 "executing_linux_command": "执行Linux命令",
                 "executing_windows_command": "执行Windows命令",
                 "unsupported_operating_system": "不支持的操作系统: {system}",
                 
-                # Logging
+                # 日志相关消息
                 "logger_initialized": "日志系统初始化，日志目录: {dir}",
                 "open_source_prefix": "[开源项目：https://github.com/chengazhen/cursor-auto-free] {msg}",
                 "account_usage_info_failure": "获取账户额度信息失败: {error}",
                 "env_variables_loaded": "环境变量加载成功！",
                 "error_prefix": "错误: {error}",
                 
-                # Exit message
+                # 退出消息
                 "program_exit_message": "\n程序执行完毕，按回车键退出...",
                 
-                # File warnings
+                # 文件警告消息
                 "names_file_not_found": "未找到names-dataset.txt文件!"
             },
+            # 英文翻译
             "en": {
-                # System messages
-                "error": "❌",
-                "warning": "⚠️",
-                "info": "ℹ️",
+                # 系统消息图标
+                "error": "❌",      # 错误图标
+                "warning": "⚠️",    # 警告图标
+                "info": "ℹ️",       # 信息图标
                 
-                # Main program flow messages
+                # 主程序流程消息（英文）
                 "initializing_program": "\n=== Initializing Program ===",
                 "select_operation_mode": "\nPlease select operation mode:",
                 "reset_machine_code_only": "1. Reset machine code only",
@@ -155,7 +162,7 @@ class Language:
                 "session_token_failed": "Failed to get session token, registration process incomplete",
                 "program_error": "Program execution error: {error}",
                 
-                # Turnstile verification messages
+                # Turnstile验证相关消息（英文）
                 "detecting_turnstile": "Detecting Turnstile verification...",
                 "verification_success": "Verification successful - Reached {status} page",
                 "retry_verification": "Attempt {count} of verification",
@@ -164,14 +171,14 @@ class Language:
                 "verification_failed_max_retries": "Verification failed - Reached maximum retry count {max_retries}",
                 "turnstile_exception": "Turnstile verification process exception: {error}",
                 
-                # Cookie and session messages
+                # Cookie和会话相关消息（英文）
                 "getting_cookie": "Starting to get cookies",
                 "cookie_attempt_failed": "Attempt {attempts} failed to get CursorSessionToken, retrying in {retry_interval} seconds...",
                 "cookie_max_attempts": "Reached maximum attempts ({max_attempts}), failed to get CursorSessionToken",
                 "cookie_failure": "Failed to get cookie: {error}",
                 "retry_in_seconds": "Will retry in {seconds} seconds...",
                 
-                # Account registration messages
+                # 账号注册相关消息（英文）
                 "start_account_registration": "=== Starting Account Registration Process ===",
                 "visiting_registration_page": "Visiting registration page: {url}",
                 "filling_personal_info": "Filling personal information...",
@@ -198,7 +205,7 @@ class Language:
                 "registration_complete": "\n=== Registration Complete ===",
                 "cursor_account_info": "Cursor account information:\nEmail: {email}\nPassword: {password}",
                 
-                # Config related messages
+                # 配置相关消息（英文）
                 "imap_server": "IMAP server: {server}",
                 "imap_port": "IMAP port: {port}",
                 "imap_username": "IMAP username: {username}",
@@ -207,10 +214,10 @@ class Language:
                 "temp_mail": "Temporary email: {mail}",
                 "domain": "Domain: {domain}",
                 
-                # End messages
+                # 结束消息（英文）
                 "end_message": "=" * 30 + "\nAll operations completed\n\n=== Get More Information ===\n📺 Bilibili UP: 想回家的前端\n🔥 WeChat: code 未来\n" + "=" * 30,
                 
-                # Error messages
+                # 错误消息（英文）
                 "file_not_exists": "File {path} does not exist",
                 "domain_not_configured": "Domain not configured, please set DOMAIN in .env file",
                 "temp_mail_not_configured": "Temporary email not configured, please set TEMP_MAIL in .env file",
@@ -220,91 +227,112 @@ class Language:
                 "imap_pass_not_configured": "IMAP password not configured, please set IMAP_PASS in .env file",
                 "imap_dir_invalid": "IMAP inbox directory configuration invalid, please set IMAP_DIR correctly in .env file",
                 
-                # Language selection
+                # 语言选择相关消息（英文）
                 "select_language": "请选择语言 / Please select language:",
                 "chinese": "1. 中文",
                 "english": "2. English",
                 "language_selected": "English has been selected as the system language",
                 
-                # System info
+                # 系统信息相关消息（英文）
                 "current_operating_system": "Current operating system: {system}",
                 "executing_macos_command": "Executing macOS command",
                 "executing_linux_command": "Executing Linux command",
                 "executing_windows_command": "Executing Windows command",
                 "unsupported_operating_system": "Unsupported operating system: {system}",
                 
-                # Logging
+                # 日志相关消息（英文）
                 "logger_initialized": "Logger initialized, log directory: {dir}",
                 "open_source_prefix": "[Open source project: https://github.com/chengazhen/cursor-auto-free] {msg}",
                 "account_usage_info_failure": "Failed to get account usage information: {error}",
                 "env_variables_loaded": "Environment variables loaded successfully!",
                 "error_prefix": "Error: {error}",
                 
-                # Exit message
+                # 退出消息（英文）
                 "program_exit_message": "\nProgram execution completed, press Enter to exit...",
                 
-                # File warnings
+                # 文件警告消息（英文）
                 "names_file_not_found": "names-dataset.txt file not found!"
             }
         }
     
+    # 设置当前语言
     def set_language(self, language_code):
-        """Set the current language"""
+        """设置当前语言"""
+        # 检查语言代码是否存在于翻译字典中
         if language_code in self.translations:
+            # 设置当前语言
             self.current_language = language_code
             return True
         return False
     
+    # 获取指定键的翻译文本
     def get(self, key, **kwargs):
-        """Get translation for a key with optional format parameters"""
+        """获取翻译文本，支持格式化参数"""
+        # 检查键是否存在于当前语言的翻译中
         if key not in self.translations[self.current_language]:
-            # Fallback to Chinese if key not found in current language
+            # 如果当前语言没有该键，尝试使用中文翻译作为后备
             if key in self.translations["cn"]:
                 text = self.translations["cn"][key]
             else:
+                # 如果中文翻译也没有该键，返回缺失提示
                 return f"[Missing translation: {key}]"
         else:
+            # 获取当前语言的翻译文本
             text = self.translations[self.current_language][key]
         
-        # Apply format if kwargs are provided
+        # 如果提供了格式化参数，进行文本格式化
         if kwargs:
             try:
                 return text.format(**kwargs)
             except KeyError as e:
+                # 如果格式化失败，返回错误信息
                 return f"{text} (FORMAT ERROR: {str(e)})"
         return text
     
+    # 显示语言选择提示并返回选择的语言代码
     def select_language_prompt(self):
-        """Display language selection prompt and return selected language code"""
+        """显示语言选择提示并处理用户输入"""
+        # 显示语言选择提示
         print(self.translations["cn"]["select_language"])
         print(self.translations["cn"]["chinese"])
         print(self.translations["cn"]["english"])
         
+        # 循环等待用户输入有效选择
         while True:
             try:
+                # 获取用户输入
                 choice = int(input().strip())
+                # 处理用户选择
                 if choice == 1:
+                    # 选择中文
                     self.set_language("cn")
                     print(self.get("language_selected"))
                     return "cn"
                 elif choice == 2:
+                    # 选择英文
                     self.set_language("en")
                     print(self.get("language_selected"))
                     return "en"
                 else:
+                    # 无效选择
                     print(self.translations["cn"]["invalid_option"])
             except ValueError:
+                # 输入的不是数字
                 print(self.translations["cn"]["enter_valid_number"])
 
-# Global language instance
+# 创建全局语言实例
 language = Language()
 
+# 定义获取翻译的辅助函数
 def get_translation(key, **kwargs):
-    """Helper function to get translation"""
+    """获取翻译的辅助函数"""
     return language.get(key, **kwargs)
 
-# For direct testing
+# 直接运行此文件时的测试代码
 if __name__ == "__main__":
+    # 显示语言选择提示
     language.select_language_prompt()
+    # 测试获取翻译
     print(get_translation("initializing_program"))
+    # 测试带参数的翻译
     print(get_translation("cursor_account_info", email="test@example.com", password="password123")) 
