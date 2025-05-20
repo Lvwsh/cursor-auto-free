@@ -102,19 +102,15 @@ class BrowserManager:
     def _get_extension_path(self, exname='turnstilePatch'):
         """
         获取浏览器插件的路径
-        
         Args:
             exname (str, optional): 插件目录名，默认为'turnstilePatch'
-            
         Returns:
-            str: 插件的完整路径
-            
+            str: 插件的完整路径（相对路径，项目根目录下）
         Raises:
             FileNotFoundError: 如果插件不存在
         """
-        # 获取当前工作目录
-        root_dir = os.getcwd()
-        # 构建插件路径
+        # 获取当前脚本所在目录，确保为项目根目录下的相对路径
+        root_dir = os.path.dirname(os.path.abspath(__file__))
         extension_path = os.path.join(root_dir, exname)
 
         # 如果是通过PyInstaller打包的版本，使用特殊的路径
@@ -126,7 +122,7 @@ class BrowserManager:
             # 如果插件不存在，抛出FileNotFoundError异常
             raise FileNotFoundError(f"插件不存在: {extension_path}")
 
-        # 返回插件的完整路径
+        # 返回插件的完整路径（相对路径）
         return extension_path
 
     def quit(self):

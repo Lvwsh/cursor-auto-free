@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os  # 导入操作系统模块，用于文件和路径操作
 import platform  # 导入平台模块，用于获取系统信息
 import json  # 导入JSON模块，用于处理JSON数据
@@ -25,6 +26,11 @@ from get_email_code import EmailVerificationHandler  # 导入邮件验证码处�
 from logo import print_logo  # 导入打印LOGO的模块
 from config import Config  # 导入配置模块
 from datetime import datetime  # 导入日期时间模块
+
+import io
+if os.name == 'nt':
+    import ctypes
+    ctypes.windll.kernel32.SetConsoleOutputCP(65001)
 
 # Define EMOJI dictionary
 EMOJI = {"ERROR": get_translation("error"), "WARNING": get_translation("warning"), "INFO": get_translation("info")}  # 定义表情符号字典，用于日志输出
@@ -152,7 +158,7 @@ def handle_turnstile(tab, max_retries: int = 2, retry_interval: tuple = (1, 2)) 
         # Exceeded maximum retries
         logging.error(get_translation("verification_failed_max_retries", max_retries=max_retries))  # 记录达到最大重试次数验证失败的错误日志
         logging.error(
-            "Please visit the open source project for more information: https://github.com/chengazhen/cursor-auto-free"
+            ""
         )  # 记录项目信息
         save_screenshot(tab, "failed")  # 保存失败的截图
         return False  # 返回False表示验证失败
@@ -304,7 +310,7 @@ def sign_up_account(browser, tab):  # 定义注册账户的函数
             total_usage = usage_info.split("/")[-1].strip()  # 解析总使用量
             logging.info(get_translation("account_usage_limit", limit=total_usage))  # 记录账户使用限制的日志
             logging.info(
-                "Please visit the open source project for more information: https://github.com/chengazhen/cursor-auto-free"
+                ""
             )  # 记录项目信息
     except Exception as e:  # 捕获可能的异常
         logging.error(get_translation("account_usage_info_failure", error=str(e)))  # 记录获取账户使用信息失败的错误日志
@@ -388,7 +394,7 @@ def check_cursor_version():  # 定义检查Cursor版本的函数
 
 def reset_machine_id(greater_than_0_45):  # 定义重置机器ID的函数
     if greater_than_0_45:  # 如果版本大于0.45.0
-        # Prompt to manually execute script https://github.com/chengazhen/cursor-auto-free/blob/main/patch_cursor_get_machine_id.py
+        # Prompt to manually execute script patch_cursor_get_machine_id.py
         go_cursor_help.go_cursor_help()  # 使用cursor帮助功能
     else:  # 否则
         MachineIDResetter().reset_machine_ids()  # 使用MachineIDResetter重置机器ID
@@ -403,16 +409,14 @@ def print_end_message():  # 定义打印结束消息的函数
     logging.info("🔥 WeChat Official Account: code 未来")  # 打印微信公众号信息
     logging.info("=" * 30)  # 打印分隔线
     logging.info(
-        "Please visit the open source project for more information: https://github.com/chengazhen/cursor-auto-free"
+        ""
     )  # 记录项目信息
 
 
 if __name__ == "__main__":  # 如果是直接运行此脚本
-    print_logo()  # 打印程序LOGO
-    
-    # Add language selection
-    print("\n")  # 打印空行
-    language.select_language_prompt()  # 提示用户选择语言
+    # 选择语言部分自动选择中文
+    choice = 2  # 直接选择完整注册流程
+    print('自动进入完整注册流程...')
     
     greater_than_0_45 = check_cursor_version()  # 检查Cursor版本是否大于0.45.0版本
     browser_manager = None  # 初始化浏览器管理器变量
@@ -420,27 +424,27 @@ if __name__ == "__main__":  # 如果是直接运行此脚本
         logging.info(get_translation("initializing_program"))  # 记录程序初始化的日志
         ExitCursor()  # 退出可能正在运行的Cursor程序
 
-        # Prompt user to select operation mode
-        print(get_translation("select_operation_mode"))  # 打印选择操作模式的提示
-        print(get_translation("reset_machine_code_only"))  # 打印仅重置机器码的选项
-        print(get_translation("complete_registration"))  # 打印完成注册的选项
+        # 直接进入完整注册流程，不再提示选择
+        # print(get_translation("select_operation_mode"))  # 打印选择操作模式的提示
+        # print(get_translation("reset_machine_code_only"))  # 打印仅重置机器码的选项
+        # print(get_translation("complete_registration"))  # 打印完成注册的选项
 
-        while True:  # 无限循环，直到得到有效输入
-            try:  # 尝试执行以下代码块
-                choice = int(input(get_translation("enter_option")).strip())  # 获取用户输入并转换为整数
-                if choice in [1, 2]:  # 如果选择是1或2
-                    break  # 退出循环
-                else:  # 否则
-                    print(get_translation("invalid_option"))  # 打印无效选项提示
-            except ValueError:  # 捕获数值错误异常
-                print(get_translation("enter_valid_number"))  # 提示用户输入有效数字
+        # while True:  # 无限循环，直到得到有效输入
+        #     try:  # 尝试执行以下代码块
+        #         choice = int(input(get_translation("enter_option")).strip())  # 获取用户输入并转换为整数
+        #         if choice in [1, 2]:  # 如果选择是1或2
+        #             break  # 退出循环
+        #         else:  # 否则
+        #             print(get_translation("invalid_option"))  # 打印无效选项提示
+        #     except ValueError:  # 捕获数值错误异常
+        #         print(get_translation("enter_valid_number"))  # 提示用户输入有效数字
 
-        if choice == 1:  # 如果选择是1（仅重置机器码）
-            # Only reset machine code
-            reset_machine_id(greater_than_0_45)  # 重置机器ID
-            logging.info(get_translation("machine_code_reset_complete"))  # 记录机器码重置完成的日志
-            print_end_message()  # 打印结束消息
-            sys.exit(0)  # 退出程序，返回状态码0（正常退出）
+        # if choice == 1:  # 如果选择是1（仅重置机器码）
+        #     # Only reset machine code
+        #     reset_machine_id(greater_than_0_45)  # 重置机器ID
+        #     logging.info(get_translation("machine_code_reset_complete"))  # 记录机器码重置完成的日志
+        #     print_end_message()  # 打印结束消息
+        #     sys.exit(0)  # 退出程序，返回状态码0（正常退出）
 
         logging.info(get_translation("initializing_browser"))  # 记录初始化浏览器的日志
 
@@ -460,7 +464,7 @@ if __name__ == "__main__":  # 如果是直接运行此脚本
         user_agent = browser.latest_tab.run_js("return navigator.userAgent")  # 获取并打印浏览器的用户代理
 
         logging.info(
-            "Please visit the open source project for more information: https://github.com/chengazhen/cursor-auto-free"
+            ""
         )  # 记录项目信息
         logging.info(get_translation("configuration_info"))  # 记录配置信息
         login_url = "https://authenticator.cursor.sh"  # 设置登录URL
@@ -500,7 +504,7 @@ if __name__ == "__main__":  # 如果是直接运行此脚本
                     email=account, access_token=token, refresh_token=token
                 )  # 更新Cursor认证信息
                 logging.info(
-                    "Please visit the open source project for more information: https://github.com/chengazhen/cursor-auto-free"
+                    ""
                 )  # 记录项目信息
                 logging.info(get_translation("resetting_machine_code"))  # 记录重置机器码的日志
                 reset_machine_id(greater_than_0_45)  # 重置机器ID

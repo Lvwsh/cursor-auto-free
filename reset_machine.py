@@ -12,20 +12,26 @@ import hashlib
 import shutil
 # 导入命令行颜色处理模块
 from colorama import Fore, Style, init
+import io
 
 # 初始化命令行颜色支持
 init()
 
 # 定义程序中使用的表情符号常量
 EMOJI = {
-    "FILE": "📄",    # 文件图标
-    "BACKUP": "💾",  # 备份图标
-    "SUCCESS": "✅", # 成功图标
-    "ERROR": "❌",   # 错误图标
-    "INFO": "ℹ️",    # 信息图标
-    "RESET": "🔄",   # 重置图标
+    "FILE": "[文件]",    # 文件图标
+    "BACKUP": "[备份]",  # 备份图标
+    "SUCCESS": "[成功]", # 成功图标
+    "ERROR": "[错误]",   # 错误图标
+    "INFO": "[信息]",    # 信息图标
+    "RESET": "[重置]",   # 重置图标
 }
 
+# sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='gbk')
+
+if os.name == 'nt':
+    import ctypes
+    ctypes.windll.kernel32.SetConsoleOutputCP(65001)
 
 # 定义机器ID重置器类
 class MachineIDResetter:
@@ -161,4 +167,4 @@ if __name__ == "__main__":
 
     # 打印结束分隔线并等待用户按回车键退出
     print(f"\n{Fore.CYAN}{'='*50}{Style.RESET_ALL}")
-    input(f"{EMOJI['INFO']} 按回车键退出...")
+

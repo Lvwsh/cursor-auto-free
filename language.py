@@ -120,7 +120,7 @@ class Language:
                 
                 # 日志相关消息
                 "logger_initialized": "日志系统初始化，日志目录: {dir}",
-                "open_source_prefix": "[开源项目：https://github.com/chengazhen/cursor-auto-free] {msg}",
+                "open_source_prefix": "{msg}",
                 "account_usage_info_failure": "获取账户额度信息失败: {error}",
                 "env_variables_loaded": "环境变量加载成功！",
                 "error_prefix": "错误: {error}",
@@ -242,7 +242,7 @@ class Language:
                 
                 # 日志相关消息（英文）
                 "logger_initialized": "Logger initialized, log directory: {dir}",
-                "open_source_prefix": "[Open source project: https://github.com/chengazhen/cursor-auto-free] {msg}",
+                "open_source_prefix": "{msg}",
                 "account_usage_info_failure": "Failed to get account usage information: {error}",
                 "env_variables_loaded": "Environment variables loaded successfully!",
                 "error_prefix": "Error: {error}",

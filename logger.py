@@ -22,7 +22,7 @@ except ImportError:
         """
         # 为特定的键提供默认翻译
         if key == "open_source_prefix":
-            return "[Open source project: https://github.com/chengazhen/cursor-auto-free] {msg}"
+            return "{msg}"
         elif key == "logger_initialized":
             return "Logger initialized, log directory: {dir}"
         # 对于其他键，直接返回键名

@@ -3,7 +3,7 @@
 README also available in: [中文](./README.md)
 
 ## Online Documentation
-[cursor-auto-free-doc.vercel.app](https://cursor-auto-free-doc.vercel.app)
+
 
 ## Note
 Recently, some users have sold this software on platforms like Xianyu. Please avoid such practices—there's no need to earn money this way.
@@ -27,10 +27,10 @@ Automated account registration and token refreshing to free your hands.
 3. **A stable internet connection is required, preferably via an overseas node. Do not enable global proxy.**
 
 ## Configuration Instructions
-Please refer to our [online documentation](https://cursor-auto-free-doc.vercel.app) for detailed configuration instructions.
+
 
 ## Download
-[https://github.com/chengazhen/cursor-auto-free/releases](https://github.com/chengazhen/cursor-auto-free/releases)
+
 
 ## Update Log
 - **2025-01-09**: Added logs and auto-build feature.  

@@ -7,9 +7,10 @@ import os
 
 
 def get_extension_path():
-    """获取插件路径"""
-    root_dir = os.getcwd()
-    extension_path = os.path.join(root_dir, "turnstilePatch")
+    """获取插件路径（相对路径，项目根目录下）"""
+    # 获取当前脚本所在目录，确保为项目根目录下的相对路径
+    root_dir = os.path.dirname(os.path.abspath(__file__))
+    extension_path = os.path.join(root_dir, "..", "turnstilePatch")
 
     if hasattr(sys, "_MEIPASS"):
         print("运行在打包环境中")
@@ -21,7 +22,6 @@ def get_extension_path():
         raise FileNotFoundError(
             f"插件不存在: {extension_path}\n请确保 turnstilePatch 文件夹在正确位置"
         )
-
     return extension_path
 
 

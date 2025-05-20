@@ -9,16 +9,6 @@ import threading  # 用于多线程操作
 # 忽略DrissionPage模块中的特定SyntaxWarning警告
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="DrissionPage")
 
-# 定义Cursor的ASCII艺术Logo
-CURSOR_LOGO = """
-   ██████╗██╗   ██╗██████╗ ███████╗ ██████╗ ██████╗ 
-  ██╔════╝██║   ██║██╔══██╗██╔════╝██╔═══██╗██╔══██╗
-  ██║     ██║   ██║██████╔╝███████╗██║   ██║██████╔╝
-  ██║     ██║   ██║██╔══██╗╚════██║██║   ██║██╔══██╗
-  ╚██████╗╚██████╔╝██║  ██║███████║╚██████╔╝██║  ██║
-   ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝
-"""
-
 # 定义加载动画类
 class LoadingAnimation:
     def __init__(self):
@@ -49,13 +39,6 @@ class LoadingAnimation:
             print(f"\r{message} {animation[idx % len(animation)]}", end="", flush=True)
             idx += 1
             time.sleep(0.1)  # 控制动画速度
-
-# 打印Cursor Logo的函数
-def print_logo():
-    # 使用青色打印Logo
-    print("\033[96m" + CURSOR_LOGO + "\033[0m")
-    # 使用黄色打印标题
-    print("\033[93m" + "Building Cursor Keep Alive...".center(56) + "\033[0m\n")
 
 # 显示进度条的函数
 def progress_bar(progress, total, prefix="", length=50):
@@ -98,9 +81,6 @@ def filter_output(output):
 def build():
     # 清屏
     os.system("cls" if platform.system().lower() == "windows" else "clear")
-
-    # 打印Logo
-    print_logo()
 
     # 获取系统类型
     system = platform.system().lower()
