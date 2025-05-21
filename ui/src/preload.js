@@ -3,6 +3,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('electronAPI', {
   // 环境设置相关
   getEnvContent: () => ipcRenderer.invoke('getEnvContent'),
+  saveEnvContent: (content) => ipcRenderer.invoke('saveEnvContent', content),
   
   // 重置机器码相关
   resetMachineId: () => ipcRenderer.invoke('resetMachineId'),

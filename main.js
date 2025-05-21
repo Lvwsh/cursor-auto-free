@@ -315,6 +315,18 @@ ipcMain.handle('getEnvContent', async () => {
   }
 });
 
+// 新增：保存.env文件内容
+ipcMain.handle('saveEnvContent', async (event, content) => {
+  const envPath = path.join(__dirname, '.env');
+  try {
+    fs.writeFileSync(envPath, content, 'utf-8');
+    return { success: true };
+  } catch (e) {
+    console.error('保存.env文件失败:', e);
+    return { success: false, error: e.message };
+  }
+});
+
 app.whenReady().then(createWindow);
 
 app.on('window-all-closed', () => {

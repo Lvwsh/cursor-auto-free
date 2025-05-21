@@ -6,6 +6,7 @@ declare module '*.module.css' {
 interface ElectronAPI {
   // 环境设置相关
   getEnvContent: () => Promise<string>;
+  saveEnvContent: (content: string) => Promise<{ success: boolean; error?: string }>;
   
   // 重置机器码相关
   resetMachineId: () => Promise<any>;
