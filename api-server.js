@@ -3,6 +3,7 @@ const cors = require('cors');
 const { spawn } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+const envUtils = require('./src/utils/envUtils');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -15,6 +16,9 @@ app.use(express.json());
 const projectRoot = path.resolve(__dirname);
 const resetMachineScriptPath = path.join(projectRoot, 'reset_machine.py');
 const registrationScriptPath = path.join(projectRoot, 'cursor_pro_keep_alive.py');
+const ENV_PATH = path.join(projectRoot, '.env');
+
+console.log('ENV_PATH:', ENV_PATH, 'exists:', fs.existsSync(ENV_PATH));
 
 // 提供API端点：重置机器码
 app.post('/api/resetMachineId', (req, res) => {
@@ -286,6 +290,51 @@ app.post('/api/completeRegistration', (req, res) => {
         });
       }
     }, 15 * 60 * 1000); // 15分钟超时
+  }
+});
+
+// 获取.env所有变量
+app.get('/api/env', (req, res) => {
+  try {
+    const groups = envUtils.parseEnvFile(ENV_PATH);
+    if (req.query.grouped === '1') {
+      // 返回分组结构，供前端动态渲染
+      res.json(groups);
+    } else {
+      // 扁平化为key-value对象
+      const envObj = {};
+      groups.forEach(group => {
+        group.items.forEach(item => {
+          envObj[item.key] = item.value;
+        });
+      });
+      res.json(envObj);
+    }
+  } catch (e) {
+    res.status(500).json({ error: '读取.env失败', detail: e.message });
+  }
+});
+
+// 保存变量到.env
+app.post('/api/env', (req, res) => {
+  try {
+    const newEnv = req.body; // { DOMAIN: 'xxx', ... }
+    // 读取原分组结构
+    const groups = envUtils.parseEnvFile(ENV_PATH);
+    // 更新变量
+    groups.forEach(group => {
+      group.items.forEach(item => {
+        if (newEnv.hasOwnProperty(item.key)) {
+          item.value = newEnv[item.key];
+        }
+      });
+    });
+    // 转为文本并写回
+    const newText = envUtils.stringifyEnvConfig(groups);
+    fs.writeFileSync(ENV_PATH, newText, 'utf-8');
+    res.json({ success: true });
+  } catch (e) {
+    res.status(500).json({ error: '写入.env失败', detail: e.message });
   }
 });
 

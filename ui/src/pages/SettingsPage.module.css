@@ -1,0 +1,130 @@
+.settingsContainer {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 8px 0 0 0;
+}
+.settingsCard {
+  background: #fafbfc;
+  border: 1px solid #e4e7ed;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  padding: 24px 32px 16px 32px;
+  min-height: 110px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.settingsTitle {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+.settingsRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.settingsInput {
+  height: 40px;
+  font-size: 14px;
+  margin-left: 16px;
+  flex: 1;
+  border: 1px solid #e4e7ed;
+  border-radius: 4px;
+  padding: 0 12px;
+  background: #fff;
+  font-weight: bold;
+}
+.settingsDesc {
+  color: #888;
+  font-size: 12px;
+  margin-left: 90px;
+  margin-bottom: 8px;
+}
+.settingsCheckboxGreenBar {
+  width: 4px;
+  height: 24px;
+  background: #00c853;
+  border-radius: 2px;
+  margin-right: 8px;
+}
+.settingsCheckbox {
+  width: 16px;
+  height: 16px;
+  accent-color: #00c853;
+  margin-right: 4px;
+}
+.settingsCheckboxFalse {
+  color: #00c853;
+  margin-left: 8px;
+  font-weight: bold;
+}
+.settingsDescGreen {
+  color: #00c853;
+  font-size: 12px;
+  margin-left: 4px;
+}
+.settingsFooter {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 24px;
+}
+.settingsBtnDefault {
+  background: #f5f5f5;
+  color: #333;
+  border: 1px solid #e4e7ed;
+  border-radius: 4px;
+  width: 160px;
+  height: 40px;
+  font-size: 15px;
+  cursor: pointer;
+}
+.settingsBtnSave {
+  background: #00c853;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  width: 160px;
+  height: 40px;
+  font-size: 15px;
+  cursor: pointer;
+}
+label {
+  min-width: 110px;
+  font-size: 14px;
+  color: #222;
+  font-weight: bold;
+}
+.buttonRow {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 32px;
+}
+.resetButton {
+  background: #f5f6fa;
+  color: #333;
+  border: 1px solid #e4e7ed;
+  border-radius: 4px;
+  padding: 0 32px;
+  height: 40px;
+  font-weight: 500;
+}
+.saveButton {
+  background: #00c853;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0 32px;
+  height: 40px;
+  font-weight: 500;
+}
+.radioGroup {
+  margin-left: 8px;
+}
+.radioGreen .ant-radio-inner {
+  border-color: #00c853 !important;
+}
+.radioGreen .ant-radio-checked .ant-radio-inner {
+  background-color: #00c853 !important;
+  border-color: #00c853 !important;
+} 

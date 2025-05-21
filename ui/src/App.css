@@ -1,3 +1,29 @@
+/* 主布局flex容器 */
+.main-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* 侧边栏固定宽度 */
+.sidebar-fixed {
+  width: 220px;
+  background: #f8fafc;
+  border-right: 1px solid #e4e7ed;
+  z-index: 10;
+  height: 100vh;
+  position: relative;
+}
+
+/* 右侧内容区局部滚动 */
+.content-area-scroll {
+  flex: 1;
+  height: 100vh;
+  overflow-y: auto;
+  background: #f5f6fa;
+  padding: 32px;
+}
+
 .App {
   text-align: center;
 }

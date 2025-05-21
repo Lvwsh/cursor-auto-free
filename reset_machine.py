@@ -112,6 +112,9 @@ class MachineIDResetter:
                 )
                 return False
 
+
+            
+
             # 读取现有配置文件
             print(f"{Fore.CYAN}{EMOJI['FILE']} 读取当前配置...{Style.RESET_ALL}")
             with open(self.db_path, "r", encoding="utf-8") as f:
@@ -120,6 +123,9 @@ class MachineIDResetter:
             # 生成新的机器标识
             print(f"{Fore.CYAN}{EMOJI['RESET']} 生成新的机器标识...{Style.RESET_ALL}")
             new_ids = self.generate_new_ids()
+
+            #print(f"{Fore.CYAN}{EMOJI['ERROR']} 配置文件路径： {self.db_path}{Style.RESET_ALL}")"""
+
 
             # 更新配置文件中的ID
             config.update(new_ids)

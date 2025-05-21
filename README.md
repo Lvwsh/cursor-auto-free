@@ -356,4 +356,18 @@
 - 使用的技术栈：Electron、React、Antd、IPC通信
 - 修改了哪些文件：main.js、ui/src/pages/HomePage.tsx、README.md、progress.md
 
+## 账号密码保存说明（zhmm.txt）
+
+- 当你通过"完整注册流程"成功注册账号后，系统会自动将注册得到的邮箱和密码保存到项目根目录下的`zhmm.txt`文件。
+- 文件路径：项目根目录（与main.js同级）
+- 内容格式如下：
+
+```
+邮箱: your_email@example.com
+密码: your_password
+
+```
+- 每次注册成功会自动追加一组账号信息。
+- 如果保存失败，界面会弹窗提示错误。
+
 

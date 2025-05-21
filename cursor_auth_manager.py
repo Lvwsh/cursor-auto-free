@@ -4,6 +4,8 @@ import sqlite3
 import os
 # 导入系统相关功能模块，用于识别操作系统类型
 import sys
+# 导入logging模块，用于打印日志信息
+import logging
 
 
 class CursorAuthManager:
@@ -20,6 +22,8 @@ class CursorAuthManager:
         
         根据不同操作系统，确定Cursor认证数据库的路径
         """
+        # 新增：打印sys.platform信息
+        logging.info(f'sys.platform: {sys.platform}')
         # 判断操作系统类型，为不同系统设置不同的数据库路径
         if sys.platform == "win32":  # Windows系统
             # 获取Windows的APPDATA环境变量，这是应用程序数据的标准位置

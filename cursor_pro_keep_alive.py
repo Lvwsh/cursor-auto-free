@@ -186,7 +186,9 @@ def get_cursor_session_token(tab, max_attempts=3, retry_interval=2):  # 定义�
             cookies = tab.cookies()  # 获取页面的所有Cookie
             for cookie in cookies:  # 遍历所有Cookie
                 if cookie.get("name") == "WorkosCursorSessionToken":  # 如果找到Cursor会话令牌Cookie
-                    return cookie["value"].split("%3A%3A")[1]  # 返回处理后的令牌值
+                    cookie_value = cookie["value"]
+                    logging.info(f'cookie: {cookie_value}')  # 新增：显示cookie
+                    return cookie_value.split("%3A%3A")[1]  # 返回处理后的令牌值
 
             attempts += 1  # 尝试次数加1
             if attempts < max_attempts:  # 如果尝试次数小于最大尝试次数
@@ -499,6 +501,7 @@ if __name__ == "__main__":  # 如果是直接运行此脚本
             logging.info(get_translation("getting_session_token"))  # 记录获取会话令牌的日志
             token = get_cursor_session_token(tab)  # 获取Cursor会话令牌
             if token:  # 如果获取令牌成功
+                logging.info(f'token: {token}')  # 新增：显示token
                 logging.info(get_translation("updating_auth_info"))  # 记录更新认证信息的日志
                 update_cursor_auth(
                     email=account, access_token=token, refresh_token=token
@@ -507,7 +510,9 @@ if __name__ == "__main__":  # 如果是直接运行此脚本
                     ""
                 )  # 记录项目信息
                 logging.info(get_translation("resetting_machine_code"))  # 记录重置机器码的日志
-                reset_machine_id(greater_than_0_45)  # 重置机器ID
+                #reset_machine_id(greater_than_0_45)  # 重置机器ID
+
+                
                 logging.info(get_translation("all_operations_completed"))  # 记录所有操作已完成的日志
                 print_end_message()  # 打印结束消息
             else:  # 如果获取令牌失败
