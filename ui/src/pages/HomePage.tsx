@@ -23,9 +23,78 @@ console.log('是否在Electron环境中:', isElectron); // 调试日志
 function filterLogContent(log: string): string {
   // 去掉分隔线和Get More Information区块
   log = log.replace(/=+\n=== Get More Information ===[\s\S]*?=+\n+/g, '');
-  // 去掉"程序执行完毕，按回车键退出..."及后续的注册成功账号信息
+  // 去掉"程序执行完毕，按回车键退出..."及后续的注释内容
   log = log.replace(/程序执行完毕，按回车键退出\.\.\.[\s\S]*?(====== 注册成功 ======[\s\S]*?cookie:.*?(\n|$))?/g, '');
   return log;
+}
+
+// 从日志中提取所有可能的邮箱地址
+function extractEmails(log: string): string[] {
+  const emailRegex = /[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+  return log.match(emailRegex) || [];
+}
+
+// 从日志中寻找最可能的有效邮箱
+function findBestEmail(log: string): string | null {
+  // 预处理：每行开头添加空格，方便后面的正则匹配
+  const processedLog = '\n' + log.split('\n').join('\n ');
+  
+  // 按优先级尝试不同的匹配模式
+  const patterns = [
+    // 1. 寻找"生成的邮箱账户: xxx@xxx.xxx"这样的格式
+    /生成的邮箱账户.*?[:：]\s*([a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i,
+    // 2. 寻找"邮箱: xxx@xxx.xxx"这样的格式
+    /\n.*邮箱.*?[:：]\s*([a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i,
+    // 3. 寻找"Email: xxx@xxx.xxx"这样的格式
+    /\n.*email.*?[:：]\s*([a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i,
+    // 4. 寻找Cursor账户信息下面的邮箱
+    /Cursor账户信息[：:][^\n]*\n[^\n]*邮箱[：:]\s*([a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i,
+    // 5. 最后尝试找任意格式的邮箱
+    /([a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i
+  ];
+  
+  for (const pattern of patterns) {
+    const match = processedLog.match(pattern);
+    if (match && match[1]) {
+      console.log(`找到邮箱(${pattern}): ${match[1]}`);
+      return match[1].trim();
+    }
+  }
+  
+  // 如果上述模式都没找到，返回所有可能的邮箱中的第一个
+  const allEmails = extractEmails(log);
+  if (allEmails.length > 0) {
+    console.log(`从所有可能的${allEmails.length}个邮箱中选择第一个: ${allEmails[0]}`);
+    return allEmails[0];
+  }
+  
+  return null;
+}
+
+// 从日志中寻找密码
+function findPassword(log: string): string | null {
+  // 预处理：每行开头添加空格，方便后面的正则匹配
+  const processedLog = '\n' + log.split('\n').join('\n ');
+  
+  // 按优先级尝试不同的匹配模式
+  const patterns = [
+    // 1. 寻找"密码: xxx"这样的格式
+    /\n.*密码.*?[:：]\s*([^\s,;]+)/i,
+    // 2. 寻找"Password: xxx"这样的格式
+    /\n.*password.*?[:：]\s*([^\s,;]+)/i,
+    // 3. 寻找Cursor账户信息下面的密码
+    /Cursor账户信息[：:][^\n]*\n[^\n]*邮箱[：:][^\n]*\n[^\n]*密码[：:]\s*([^\s,;]+)/i,
+  ];
+  
+  for (const pattern of patterns) {
+    const match = processedLog.match(pattern);
+    if (match && match[1]) {
+      console.log(`找到密码(${pattern}): ${match[1]}`);
+      return match[1].trim();
+    }
+  }
+  
+  return null;
 }
 
 const HomePage: React.FC = () => {
@@ -164,32 +233,37 @@ ${new Date().toLocaleString()} - SUCCESS - 机器标识重置成功！
             });
             
             // 提取账号信息
-            const emailPattern = /邮箱.*?[:,：]\s*([a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i;
-            const passwordPattern = /密码.*?[:,：]\s*([^\s]+)/i;
-            const accessTokenPattern = /accessToken.*?[:,：]?\s*([^\s]+)/i;
-            const refreshTokenPattern = /refreshToken.*?[:,：]?\s*([^\s]+)/i;
-            const cookiePattern = /cookie.*?[:,：]?\s*([^\s]+)/i;
-            const emailMatch = allLog.match(emailPattern);
-            const passwordMatch = allLog.match(passwordPattern);
-            const accessTokenMatch = allLog.match(accessTokenPattern);
-            const refreshTokenMatch = allLog.match(refreshTokenPattern);
-            const cookieMatch = allLog.match(cookiePattern);
+            const email = findBestEmail(allLog);
+            const password = findPassword(allLog);
             
             let accountInfo = `\n\n====== 注册成功 ======\n`;
-            if (emailMatch) accountInfo += `邮箱: ${emailMatch[1]}\n`;
-            if (passwordMatch) accountInfo += `密码: ${passwordMatch[1]}\n`;
-            if (accessTokenMatch) accountInfo += `accessToken: ${accessTokenMatch[1]}\n`;
-            if (refreshTokenMatch) accountInfo += `refreshToken: ${refreshTokenMatch[1]}\n`;
-            if (cookieMatch) accountInfo += `cookie: ${cookieMatch[1]}\n`;
+            if (email) accountInfo += `邮箱: ${email}\n`;
+            if (password) accountInfo += `密码: ${password}\n`;
             
             setOperationProgress(accountInfo);
             appendLog(accountInfo); // 写入本地日志
             
+            // 打印调试信息
+            console.log('提取到的账户信息:', {
+              email: email,
+              password: password
+            });
+            
             // 保存账号密码
-            if (emailMatch && passwordMatch && window.electronAPI) {
+            if (email && password && window.electronAPI) {
+              console.log('正在保存账号:', email);
               window.electronAPI.saveAccount({
-                email: emailMatch[1],
-                password: passwordMatch[1]
+                email: email,
+                password: password
+              });
+              
+              // 监听保存成功
+              const successUnsubscribe = window.electronAPI.onSaveAccountSuccess((_event, data) => {
+                message.success({
+                  content: `账号 ${data.email} 已保存到zhmm.txt`,
+                  duration: 3
+                });
+                successUnsubscribe();
               });
               
               // 监听保存错误
@@ -201,14 +275,11 @@ ${new Date().toLocaleString()} - SUCCESS - 机器标识重置成功！
                 errorUnsubscribe();
               });
               
-              // 成功提示
+              // 超时清理
               setTimeout(() => {
+                successUnsubscribe();
                 errorUnsubscribe();
-                message.success({
-                  content: '账号已保存到zhmm.txt',
-                  duration: 3
-                });
-              }, 5000);
+              }, 10000);
             }
           } else {
             message.error({

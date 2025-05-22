@@ -16,6 +16,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
   
   // 账号保存相关
   saveAccount: (data) => ipcRenderer.send('saveAccount', data),
+  onSaveAccountSuccess: (callback) => {
+    ipcRenderer.on('saveAccount-success', callback);
+    return () => ipcRenderer.removeListener('saveAccount-success', callback);
+  },
+  onSaveAccountError: (callback) => {
+    ipcRenderer.on('saveAccount-error', callback);
+    return () => ipcRenderer.removeListener('saveAccount-error', callback);
+  },
   
   // 日志监听相关
   onResetMachineIdLog: (callback) => {
@@ -33,10 +41,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onCompleteRegistrationEnd: (callback) => {
     ipcRenderer.on('completeRegistration-log-end', callback);
     return () => ipcRenderer.removeListener('completeRegistration-log-end', callback);
-  },
-  onSaveAccountError: (callback) => {
-    ipcRenderer.on('saveAccount-error', callback);
-    return () => ipcRenderer.removeListener('saveAccount-error', callback);
   },
   
   // 写入日志

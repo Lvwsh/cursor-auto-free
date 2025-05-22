@@ -187,30 +187,66 @@ ipcMain.handle('completeRegistration', (event) => {
           message = '注册流程已完成，请重启Cursor应用以生效';
           const successPattern = /注册成功|完成所有操作|所有操作已完成|registration.*success|all.*operations.*completed/i;
           if (successPattern.test(stdoutData)) {
+            // 扩展邮箱匹配模式
             const emailPatterns = [
-              /生成的邮箱账户.*?:\s*([a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/,
-              /邮箱.*?:\s*([a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/,
-              /email.*?:\s*([a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/,
-              /([a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/
+              /生成的邮箱账户.*?[:：]\s*([a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i,
+              /生成的邮箱.*?[:：]\s*([a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i,
+              /邮箱账户.*?[:：]\s*([a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i,
+              /邮箱.*?[:：]\s*([a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i,
+              /电子邮箱.*?[:：]\s*([a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i,
+              /email.*?[:：]\s*([a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i,
+              /([a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/i
             ];
+            // 扩展密码匹配模式
             const passwordPatterns = [
-              /密码.*?:\s*([^\s]+)/,
-              /password.*?:\s*([^\s]+)/
+              /密码.*?[:：]\s*([^\s,;]+)/i,
+              /password.*?[:：]\s*([^\s,;]+)/i
             ];
-            let emailMatch = null;
+            
+            // 查找所有匹配的邮箱
+            let emailMatches = [];
             for (const pattern of emailPatterns) {
-              emailMatch = stdoutData.match(pattern);
-              if (emailMatch) break;
+              const matches = [...stdoutData.matchAll(new RegExp(pattern, 'gi'))];
+              if (matches.length > 0) {
+                matches.forEach(match => {
+                  if (match[1]) emailMatches.push(match[1]);
+                });
+              }
             }
+            
+            // 使用最后一个找到的邮箱（通常是最终注册成功的那个）
+            let emailMatch = emailMatches.length > 0 ? 
+              { 1: emailMatches[emailMatches.length - 1] } : null;
+            console.log('[注册流程] 找到的所有邮箱:', emailMatches);
+            
             let passwordMatch = null;
             for (const pattern of passwordPatterns) {
               passwordMatch = stdoutData.match(pattern);
               if (passwordMatch) break;
             }
+            
             if (emailMatch && passwordMatch) {
-              message = `注册成功！账号: ${emailMatch[1]}, 密码: ${passwordMatch[1]}。请保存这些信息并重启Cursor应用以生效。`;
+              // 清理邮箱和密码（去除可能的非打印字符）
+              const cleanEmail = emailMatch[1].trim().replace(/[\u0000-\u001F\u007F-\u009F]/g, '');
+              const cleanPassword = passwordMatch[1].trim();
+              
+              console.log('[注册流程] 提取到账号:', cleanEmail);
+              message = `注册成功！账号: ${cleanEmail}, 密码: ${cleanPassword}。请保存这些信息并重启Cursor应用以生效。`;
+              
+              // 直接在这里保存账号密码
+              try {
+                const savePath = path.resolve(process.cwd(), 'zhmm.txt');
+                const now = new Date();
+                const timestamp = `[${now.toISOString().replace('T', ' ').substring(0, 19)}]`;
+                let content = `${timestamp}\n邮箱: ${cleanEmail}\n密码: ${cleanPassword}\n\n`;
+                fs.appendFileSync(savePath, content, 'utf-8');
+                console.log('[注册流程] 账号已保存到zhmm.txt');
+              } catch (e) {
+                console.error('[注册流程] 保存账号失败:', e);
+              }
             } else if (emailMatch) {
-              message = `注册成功！账号: ${emailMatch[1]}。请保存此信息并重启Cursor应用以生效。`;
+              const cleanEmail = emailMatch[1].trim().replace(/[\u0000-\u001F\u007F-\u009F]/g, '');
+              message = `注册成功！账号: ${cleanEmail}。请保存此信息并重启Cursor应用以生效。`;
             }
           }
         } else {
@@ -291,13 +327,43 @@ ipcMain.handle('getLogDir', () => LOG_DIR);
 ipcMain.on('saveAccount', (event, { email, password }) => {
   try {
     const savePath = path.resolve(process.cwd(), 'zhmm.txt');
-    let content = '';
+    
+    // 读取现有内容，检查是否已存在相同账号
+    let existingContent = '';
+    if (fs.existsSync(savePath)) {
+      existingContent = fs.readFileSync(savePath, 'utf-8');
+    }
+    
+    // 检查是否已存在相同的账号
+    const emailLine = `邮箱: ${email}`;
+    if (existingContent.includes(emailLine)) {
+      console.log('[saveAccount] 已存在相同账号，跳过保存:', email);
+      return; // 已存在相同账号时不再保存
+    }
+    
+    // 生成时间戳前缀
+    const now = new Date();
+    const timestamp = `[${now.toISOString().replace('T', ' ').substring(0, 19)}]`;
+    
+    // 构建要写入的内容
+    let content = `${timestamp}\n`;
     if (email) content += `邮箱: ${email}\n`;
     if (password) content += `密码: ${password}\n`;
     content += '\n';
-    console.log('[saveAccount] 即将写入:', savePath, content);
+    
+    // 写入文件（追加模式）
+    console.log('[saveAccount] 即将写入新账号:', email);
     fs.appendFileSync(savePath, content, 'utf-8');
     console.log('[saveAccount] 写入成功:', savePath);
+    
+    // 记录到日志
+    const logDir = path.resolve(process.cwd(), 'logs');
+    if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true });
+    const logPath = path.join(logDir, `accounts_${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}.log`);
+    fs.appendFileSync(logPath, content, 'utf-8');
+    
+    // 发送成功事件
+    event.sender.send('saveAccount-success', { email });
   } catch (err) {
     console.error('[saveAccount] 写入失败:', err);
     event.sender.send('saveAccount-error', err.message);

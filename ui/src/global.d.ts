@@ -19,13 +19,14 @@ interface ElectronAPI {
   
   // 账号保存相关
   saveAccount: (data: {email: string, password: string}) => void;
+  onSaveAccountSuccess: (callback: (event: any, data: {email: string}) => void) => () => void;
+  onSaveAccountError: (callback: (event: any, error: string) => void) => () => void;
   
   // 日志监听相关
   onResetMachineIdLog: (callback: (event: any, data: string) => void) => () => void;
   onResetMachineIdEnd: (callback: (event: any, result: any) => void) => () => void;
   onCompleteRegistrationLog: (callback: (event: any, data: string) => void) => () => void;
   onCompleteRegistrationEnd: (callback: (event: any, result: any) => void) => () => void;
-  onSaveAccountError: (callback: (event: any, error: string) => void) => () => void;
   
   // 写入日志
   writeLog: (logContent: string) => void;
